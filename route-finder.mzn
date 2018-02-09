@@ -1,34 +1,16 @@
-%
-% Given a set of students produce teams
-% Each student is one team and one team only
-% A team must be of size lwb to upb inclusive
-% There are some pairs of students who must be in the same team together
-% There are some pairs of students who must not be in the same team together
-%
-% There are two parts to the exercise
-%
-%  (a) Produce T teams, i.e. produce a satisfactory allocation of students to teams
-%  (b) Minimize the number of teams produced
-%
-include "globals.mzn"; 
+% Given a map with 0s meaning free space and 1s meaning obstacle
+% Find the shortest route between a starting position and a target position
 
-enum move = {right, left, up, down, stay};
-
-% int: m = 3;
-% int: n = 5;
-% array[1..m,1..n] of int: map = [|0,1,1,0,0
-%                                                |0,1,1,0,0
-%                                                |0,0,0,0,0|];
-                                               
+include "globals.mzn";                                      
 
 int: m = 13;
 int: n = 20;
 array[1..m,1..n] of int: map = [|0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
                                                |0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+                                               |0,0,1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0
+                                               |0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
+                                               |0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
+                                               |0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
                                                |0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
                                                |0,1,1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
                                                |0,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0
@@ -37,14 +19,13 @@ array[1..m,1..n] of int: map = [|0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
                                                |0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
                                                |0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|];                                             
                                                                                                                                        
-                                               
 int: cX = 0 ;
 int: cY = 0;
 
-int: tX = 0;
-int: tY = 4;                                                                          
+int: tX = 4;
+int: tY = 0;                                                                          
 
-int: steps = 15;
+int: steps = 5;
 
 % decision variables
 array[1..steps, 0..1] of var -1..1: moves; % which move to take
