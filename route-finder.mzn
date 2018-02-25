@@ -1,31 +1,19 @@
 % Given a map with 0s meaning free space and 1s meaning obstacle
 % Find the shortest route between a starting position and a target position
 
-include "globals.mzn";                                      
+%include "globals.mzn";                                      
 
-int: m = 13;
-int: n = 20;
-array[1..m,1..n] of int: map = [|0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,1,1,0,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,1,1,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,1,1,0,1,1,0,1,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,1,1,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,1,1,1,1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0
-                                               |0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0|];                                             
+int: m;
+int: n; 
+array[1..m,1..n] of int: map;                                    
                                                                                                                                        
-int: cX = 0 ;
-int: cY = 0;
+int: cX;
+int: cY;
 
-int: tX = 4;
-int: tY = 0;                                                                          
+int: tX;
+int: tY;                                                                       
 
-int: steps = 5;
+int: steps;
 
 % decision variables
 array[1..steps, 0..1] of var -1..1: moves; % which move to take
@@ -62,7 +50,17 @@ constraint forall(step in 1..steps)(if (currentPositions[step, 0] = tX /\ curren
 
 % constraint forall(step in 1..steps)(map[sum([moves[o,0] |o in 1..step ]) , sum([moves[o,1] |o in 1..step ])] == 1 -> false);
 
-solve satisfy;
+% push [0,0] moves to the end
+constraint forall(step in 1..steps-1)(currentPositions[step,0] == currentPositions[step+1,0] /\ currentPositions[step,1] == currentPositions[step+1,1] <-> currentPositions[step,0] == tX /\ currentPositions[step,1] == tY);
+
+var int: actualMoves = steps - sum([1| k in 1..steps where moves[k,0] == 0 /\ moves[k,1] == 0 ]);
+
+solve minimize actualMoves;
+%solve::int_search([moves[g,d]| g in 1..steps, d in 0..1],smallest,indomain_max,complete) minimize actualMoves;
+
+output["Moves taken: " ++ show(fix(actualMoves)) ++ "\n"];
+% solve satisfy;
+%solve::int_search([moves[g,d]| g in 1..steps, d in 0..1],smallest,indomain_max,complete) satisfy;
 
 output[show([show(fix(row(moves,k))) | k in 1..steps]) ];
 output["\n Current X: " ++ show(fix(cX)) ++ "\n"];
