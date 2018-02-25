@@ -57,16 +57,18 @@ var int: actualMoves = steps - sum([1| k in 1..steps where moves[k,0] == 0 /\ mo
 
 solve minimize actualMoves;
 %solve::int_search([moves[g,d]| g in 1..steps, d in 0..1],smallest,indomain_max,complete) minimize actualMoves;
-
-output["Moves taken: " ++ show(fix(actualMoves)) ++ "\n"];
 % solve satisfy;
 %solve::int_search([moves[g,d]| g in 1..steps, d in 0..1],smallest,indomain_max,complete) satisfy;
 
-output[show([show(fix(row(moves,k))) | k in 1..steps]) ];
-output["\n Current X: " ++ show(fix(cX)) ++ "\n"];
-output["Current Y:" ++ show(fix(cY))];
-output["\n\nCurrent positons: " ++ show([show(fix(row(currentPositions,k))) | k in 1..steps+1]) ];
-output["\n\nDistances: " ++ show(distances) ];
+
+output["Moves taken: " ++ show(fix(actualMoves)) ++ "\n"
+            ++ "Moves: " ++ show([show(fix(row(currentPositions,k))) | k in 1..steps+1]) ];
+
+% output[show([show(fix(row(moves,k))) | k in 1..steps]) ];
+% output["\n Current X: " ++ show(fix(cX)) ++ "\n"];
+% output["Current Y:" ++ show(fix(cY))];
+% output["\n\nCurrent positons: " ++ show([show(fix(row(currentPositions,k))) | k in 1..steps+1]) ];
+% output["\n\nDistances: " ++ show(distances) ];
 % output["number of teams = " ++ show(numberOfTeams) ++ "\n"];
 % output["team sizes: " ++ show(teamSizes) ++ "\n" ];
 % output[(if fix(teamSizes[t]) > 0  then "team " ++ show(t) ++ ":" ++ show([show(s) | s in STUDENTS where fix(teamAllocation[s,t])==true]) ++"\n" else"" endif)| t in TEAM];
